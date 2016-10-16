@@ -5,19 +5,13 @@
     android:orientation="vertical"
     android:padding="20dp">
 
-    <android.support.v7.widget.CardView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/messagesRecylerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/messages"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="Ali: Hello\nNTU OSS: How's the workshop going?\nShawn: Firebase is amazing!" />
-    </android.support.v7.widget.CardView>
-
+    </android.support.v7.widget.RecyclerView>
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
