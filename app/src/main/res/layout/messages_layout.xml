@@ -24,18 +24,24 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+            <Button
+                android:id="@+id/button_add_picture"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:drawable/ic_menu_camera" />
+
             <EditText
                 android:id="@+id/et_message_box"
                 android:layout_width="wrap_content"
-                android:layout_height="100dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="Enter your message"
                 android:paddingLeft="10dp" />
 
             <Button
                 android:id="@+id/button_send"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:background="@android:drawable/ic_menu_send" />
         </LinearLayout>
 

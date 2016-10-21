@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -38,8 +39,17 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecycl
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Message message = messageList.get(position);
-        holder.message.setText(message.getMessage());
-        holder.from.setText(message.getFrom());
+
+        if (message.getMessageType() == Message.TYPE_TEXT) {
+            holder.message.setText(message.getMessage());
+            holder.from.setText(message.getFrom());
+            holder.imageView.setVisibility(View.GONE);
+        } else if (message.getMessageType() == Message.TYPE_IMAGE) {   //Type Image
+            holder.from.setText(message.getFrom());
+            holder.imageView.setImageBitmap(message.getImage());
+            holder.message.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
@@ -49,12 +59,14 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecycl
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView message, from;
+        public ImageView imageView;
 
 
         public MyViewHolder(View view) {
             super(view);
             message = (TextView) view.findViewById(R.id.message);
             from = (TextView) view.findViewById(R.id.from);
+            imageView = (ImageView) view.findViewById(R.id.message_image);
         }
 
 
