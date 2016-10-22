@@ -10,15 +10,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //Declaring views
     EditText etName, etPassword, etConfirmPassword, etEmail;
     Button bSignInOrUp;
-    TextView bAlreadySignUp;
+    TextView bAlreadySignUp;aunteaunaa
     TextInputLayout tILConfirmPassword;
     boolean signUpFeaturesVisible = false;
 
+    //Declaring FirebaseAuth object
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +40,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Setting onClick Listeners
         bSignInOrUp.setOnClickListener(this);
         bAlreadySignUp.setOnClickListener(this);
+
+        //Initializing FirebaseAuth
+        mAuth = FirebaseAuth.getInstance();
 
 
     }
