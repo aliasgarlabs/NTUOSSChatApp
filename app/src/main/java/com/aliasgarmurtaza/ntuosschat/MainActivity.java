@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //Declaring views
     EditText etName, etPassword, etConfirmPassword, etEmail;
     Button bSignInOrUp;
-    TextView bAlreadySignUp;aunteaunaa
+    TextView bAlreadySignUp;
     TextInputLayout tILConfirmPassword;
     boolean signUpFeaturesVisible = false;
 
