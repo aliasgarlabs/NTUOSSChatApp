@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1025002381927",
+    "firebase_url": "https://ntuoss-chat.firebaseio.com",
+    "project_id": "ntuoss-chat",
+    "storage_bucket": "ntuoss-chat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1025002381927:android:cf46dd0e9cfdf8e5",
+        "android_client_info": {
+          "package_name": "com.aliasgarmurtaza.ntuosschat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1025002381927-jks93828m0ij52m5cb5dd7v0020c7lsa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3IlNFdMDUgk33jUr4vcIhKPCH4VLj5cA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
