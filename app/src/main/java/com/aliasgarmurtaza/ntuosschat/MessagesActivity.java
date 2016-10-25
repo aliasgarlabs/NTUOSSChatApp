@@ -53,6 +53,8 @@ public class MessagesActivity extends AppCompatActivity {
         {
             currentUser = (User) savedInstanceState.getSerializable("currentuser");
             email =  savedInstanceState.getString("email");
+            loadMessages();
+
         }
         else {
 
@@ -93,7 +95,6 @@ public class MessagesActivity extends AppCompatActivity {
 
 
 
-        loadMessages();
 
     }
 
@@ -116,6 +117,7 @@ public class MessagesActivity extends AppCompatActivity {
 
                 for (DataSnapshot messageChild : dataSnapshot.getChildren()) {
                      currentUser = messageChild.getValue(User.class);
+                    loadMessages();
                     Log.d("TAG", dataSnapshot.toString());
                 }
 
@@ -198,18 +200,12 @@ public class MessagesActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-
-
             String fromMessageText = currentUser.getName();
             sendImageMessage(fromMessageText, imageBitmap);
         }
@@ -222,10 +218,36 @@ public class MessagesActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable("currentuser", currentUser);
         outState.putSerializable("email", email);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.action_signout:
+                    FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 }

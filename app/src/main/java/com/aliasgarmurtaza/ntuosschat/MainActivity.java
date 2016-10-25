@@ -69,7 +69,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         };
 
+        if(checkIfUserIsLoggedIn())
+        {
+            openMessagesActivity(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        }
 
+
+    }
+
+    private boolean checkIfUserIsLoggedIn() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            return true;
+        }
+        return false;
     }
 
     @Override
