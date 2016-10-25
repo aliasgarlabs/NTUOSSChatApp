@@ -20,25 +20,40 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * Created by Aliasgar Murtaza on 17/10/16.
+ * This is activity handles login and signUp flow
+ * and leads to MessageActivity.
+ */
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private String TAG = "MainActivity";
+
     //Declaring views
-    EditText etName, etPassword, etConfirmPassword, etEmail;
-    Button bSignInOrUp;
-    TextView bAlreadySignUp;
-    TextInputLayout tILConfirmPassword;
-    boolean signUpFeaturesVisible = false;
+    private EditText etName, etPassword, etConfirmPassword, etEmail;
+    private Button bSignInOrUp;
+    private TextView bAlreadySignUp;
+    private TextInputLayout tILConfirmPassword;
+    private boolean signUpFeaturesVisible = false;
 
     //Declaring FirebaseAuth object
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
 
-    String TAG = "MainActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initializeViews();
+        initFirebaseAuth();
+
+        if (checkIfUserIsLoggedIn()) {
+            openMessagesActivity();
+        }
+    }
+
+    private void initializeViews() {
         //Initializing views
         etName = (EditText) findViewById(R.id.name);
         etPassword = (EditText) findViewById(R.id.password);
@@ -51,38 +66,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Setting onClick Listeners
         bSignInOrUp.setOnClickListener(this);
         bAlreadySignUp.setOnClickListener(this);
-
-        //Initializing FirebaseAuth
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-
-            }
-        };
-
-        if(checkIfUserIsLoggedIn())
-        {
-            openMessagesActivity(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-        }
-
-
-    }
-
-    private boolean checkIfUserIsLoggedIn() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -103,9 +86,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     bAlreadySignUp.setText("Sign in?");
                 }
 
-                //Negate
+                //Negate as state as changed
                 signUpFeaturesVisible = !signUpFeaturesVisible;
-
                 break;
             }
 
@@ -116,120 +98,134 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
+    private boolean validate(String name, String email, String password, String confirmPassword) {
+        //Validating the input
+        if(email.isEmpty() || password.isEmpty())
+            return false;
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
+        if(signUpFeaturesVisible)
+        {
+            if(name.isEmpty()|| !password.equals(confirmPassword))
+                return false;
         }
+        return true;
+
     }
 
     private void signInOrSignUp() {
-
+        //Sign in or sign up based on the views visible
         String name, password, confirmPassword, email;
 
+        //Getting the EditText values
         name = etName.getText().toString();
         email = etEmail.getText().toString();
         password = etPassword.getText().toString();
         confirmPassword = etConfirmPassword.getText().toString();
 
-
+        //Checking if input is valid
         boolean validated = validate(name, email, password, confirmPassword);
 
-        //TODO Dummy login - Should be removed after implementation
-        if (validated || true) {
+        if (validated) {
             //Proceed with Sign In or Sign UP
             if (signUpFeaturesVisible) {
-                //Sign Up
-             createUser(name, email,password);
-
+                //Sign Up as sign up views are visible
+                createUser(name, email, password);
             } else {
                 //Sign In
-             signInUser(email,password);
+                signInUser(email, password);
             }
         } else {
             Toast.makeText(getApplicationContext(), "Please check your details", Toast.LENGTH_LONG).show();
         }
-
     }
 
-    private void openMessagesActivity(String email) {
+    private void openMessagesActivity() {
+        //Launch the messaging activity
         Intent intent = new Intent(this, MessagesActivity.class);
-        intent.putExtra("email", email);
         startActivity(intent);
         finish();
     }
 
-    private boolean validate(String name, String email, String password, String confirmPassword) {
-        //Validating the input
-        if (name.isEmpty())
-            return false;
-        if (email.isEmpty() && !email.contains("@"))
-            return false;
-        if (!password.equals(confirmPassword) || password.isEmpty())
-            return false;
-        return true;
-    }
-
-    private void createUser(final String name, final String email, String password)
-    {
+    private void createUser(final String name, final String email, String password) {
+        //We are creating a new user here. All security measures are handled by Firebase.
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
 
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), "Sign up failed.",
                                     Toast.LENGTH_SHORT).show();
-                        }
-                        else
-                        {
+                        } else {
+                            //Now we want to add this user data in our DB so that we can store more attributes of the user
+                            //apart from name and email.
                             updateUserInDB(task.getResult().getUser().getUid(), name, email);
-                            openMessagesActivity(email);
+                            openMessagesActivity();
                         }
                     }
                 });
     }
 
-    private void signInUser(final String email, String password)
-    {
+    private void signInUser(String email, String password) {
+        //Again, security is taken care of. Returns passwords wrong or user doesn't exists exceptions.
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
-
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithEmail:failed", task.getException());
                             Toast.makeText(getApplicationContext(), "Sign in failed.",
                                     Toast.LENGTH_SHORT).show();
+                        } else {
+                            openMessagesActivity();
                         }
-                        else
-                        {
-                            openMessagesActivity(email);
-                        }
-
                     }
                 });
     }
 
     private void updateUserInDB(String uid, String name, String email) {
+        //This is how we make a entry in the database. Yes, it's this simple.
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users/"+uid);
+        DatabaseReference myRef = database.getReference("users/" + uid);
+
+        //We made a object with name uid and we are adding two children to it.
+        //The Firebase database with 2 users will look like this.
+        // Remember Firebase is a NO-SQL database, It has tree like structure.
+        // ------DB
+        //        |
+        //        |______users
+        //                   |
+        //                   |______s27t7y2s7w78h8sh                                //(RANDOM UID)
+        //                   |                     |
+        //                   |                     |______name = user1name
+        //                   |                     |
+        //                   |                     |______email = user1email
+        //                   |
+        //                   |______j9dj3h37673ey83d                                //(RANDOM UID)
+        //                                         |
+        //                                         |______name = user2name
+        //                                         |
+        //                                         |______email = user2email
+
+        //Ofc we can add as many attributes we want.
         myRef.child("name").setValue(name);
         myRef.child("email").setValue(email);
     }
+
+    private void initFirebaseAuth() {
+        //Initializing FirebaseAuth.
+        //This object is responsible for all sign in, sign up and sign out.
+        mAuth = FirebaseAuth.getInstance();
+    }
+
+    private boolean checkIfUserIsLoggedIn() {
+        //Checking for already logged in user is this simple. No more maintaining of tokens and stuff.
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null)
+            return true;
+        return false;
+    }
+
 }
