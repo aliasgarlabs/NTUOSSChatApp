@@ -146,8 +146,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void openMessagesActivity() {
+    private void openMessagesActivity(String email) {
         Intent intent = new Intent(this, MessagesActivity.class);
+        intent.putExtra("email", email);
         startActivity(intent);
         finish();
     }
@@ -181,13 +182,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         else
                         {
                             updateUserInDB(task.getResult().getUser().getUid(), name, email);
-                            openMessagesActivity();
+                            openMessagesActivity(email);
                         }
                     }
                 });
     }
 
-    private void signInUser(String email, String password)
+    private void signInUser(final String email, String password)
     {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -205,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                         else
                         {
-                            openMessagesActivity();
+                            openMessagesActivity(email);
                         }
 
                     }

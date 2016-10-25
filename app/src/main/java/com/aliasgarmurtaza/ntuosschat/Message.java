@@ -3,19 +3,24 @@ package com.aliasgarmurtaza.ntuosschat;
 import android.graphics.Bitmap;
 
 /**
- * Created by mac on 17/10/16.
+ * Created by Aliasgar Murtaza on 17/10/16.
  */
 public class Message {
 
     public static int TYPE_TEXT = 0;
     public static int TYPE_IMAGE = 1;
-    String message;
+    String text;
     String from;
     Bitmap image;
     int messageType;
 
-    public Message(String from, String message) {
-        this.message = message;
+    public Message()
+    {
+
+    }
+
+    public Message(String from, String text) {
+        this.text = text;
         this.from = from;
         this.messageType = TYPE_TEXT;
     }
@@ -39,12 +44,12 @@ public class Message {
         this.image = image;
     }
 
-    public String getMessage() {
-        return message;
+    public String getText() {
+        return text;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setText(String text) {
+        this.text = text;
     }
 
     public String getFrom() {

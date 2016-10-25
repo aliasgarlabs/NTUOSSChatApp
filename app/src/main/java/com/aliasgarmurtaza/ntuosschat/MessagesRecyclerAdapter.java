@@ -41,7 +41,7 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecycl
         Message message = messageList.get(position);
 
         if (message.getMessageType() == Message.TYPE_TEXT) {
-            holder.message.setText(message.getMessage());
+            holder.message.setText(message.getText());
             holder.from.setText(message.getFrom());
             holder.imageView.setVisibility(View.GONE);
         } else if (message.getMessageType() == Message.TYPE_IMAGE) {   //Type Image
