@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 /**
@@ -44,10 +46,13 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecycl
             holder.message.setText(message.getText());
             holder.from.setText(message.getFrom());
             holder.imageView.setVisibility(View.GONE);
+            holder.message.setVisibility(View.VISIBLE);
         } else if (message.getMessageType() == Message.TYPE_IMAGE) {   //Type Image
             holder.from.setText(message.getFrom());
-            holder.imageView.setImageBitmap(message.getImage());
+            holder.imageView.setImageResource(R.drawable.default_image);
+            Glide.with(context).load(message.getImageURL()).into(holder.imageView);
             holder.message.setVisibility(View.GONE);
+            holder.imageView.setVisibility(View.VISIBLE);
         }
 
     }

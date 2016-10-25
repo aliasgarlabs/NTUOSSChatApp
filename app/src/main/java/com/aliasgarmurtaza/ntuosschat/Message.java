@@ -13,6 +13,15 @@ public class Message {
     String from;
     Bitmap image;
     int messageType;
+    String imageURL;
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
 
     public Message()
     {
@@ -30,6 +39,12 @@ public class Message {
         this.image = image;
         this.from = from;
         this.messageType = TYPE_IMAGE;
+    }
+
+    public Message(String from, Bitmap image, String imageURL) {
+        super();
+        this.imageURL = imageURL;
+
     }
 
     public int getMessageType() {
