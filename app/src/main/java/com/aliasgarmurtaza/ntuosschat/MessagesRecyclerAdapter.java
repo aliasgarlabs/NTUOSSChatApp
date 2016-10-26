@@ -63,7 +63,8 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecycl
             holder.message.setVisibility(View.GONE);
             holder.imageView.setVisibility(View.VISIBLE);
             //Downloading image with Glide. Free open-source library by Google. Swift.
-            Glide.with(context).load(message.getImageURL()).into(holder.imageView);
+            // TODO Uncomment the below line in module 3
+            //Glide.with(context).load(message.getImageURL()).into(holder.imageView);
         }
     }
 

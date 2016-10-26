@@ -122,8 +122,16 @@ public class MessagesActivity extends AppCompatActivity implements View.OnClickL
             //Retrieving the thumbnail for sake of simplicity. Should retrieve complete image ideally.
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            uploadImageToStorage(imageBitmap);
+            uploadImageDummy(imageBitmap);
         }
+    }
+
+    private void uploadImageDummy(Bitmap imageBitmap) {
+        //TODO Dummy message send. Should be replaced after implementation
+        Message message = new Message(currentUser.getName(), imageBitmap);
+        messages.add(message);
+        messagesRecyclerAdapter.notifyDataSetChanged();
+        messageRecyclerView.smoothScrollToPosition(messages.size());
     }
 
     private void dispatchTakePictureIntent() {
@@ -253,47 +261,6 @@ public class MessagesActivity extends AppCompatActivity implements View.OnClickL
         etMessageBox.setText("");
     }
 
-
-    private void uploadImageToStorage(Bitmap image) {
-
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-
-        //Creating a unique image name with combination of time and first 4 letters of the email address
-        String imageName = "IMG" + Calendar.getInstance().getTimeInMillis() + "_" + FirebaseAuth.getInstance().getCurrentUser().getEmail().substring(0, 4);
-
-        //Storage reference of the bucket on the database. Consider bucket as your drive on Google Drive.
-        StorageReference storageRef = storage.getReferenceFromUrl("gs://ntuoss-chat.appspot.com"); //Bucket id for NTU OSS app
-
-        //Storage reference of our new image. Basically, this is the path.
-        StorageReference imageRef = storageRef.child("images/" + imageName + ".jpg");
-
-        //Transforming bitmap to bytes[] for upload
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-
-        //Uploads are done using uploadTask
-        UploadTask uploadTask = imageRef.putBytes(byteArrayOutputStream.toByteArray());
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                //Handle unsuccessful uploads
-                Toast.makeText(getApplicationContext(), "Upload failed!", Toast.LENGTH_SHORT).show();
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-
-                //URL for the image. We need to save it in the message object and upload the message in the DB now.
-                // Remember, storage and DB are different things on Firebase.
-                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-
-                addMessageToDB(Message.TYPE_IMAGE, downloadUrl.toString());
-            }
-        });
-
-
-    }
 
     private void fetchMessagesFromDB() {
 
