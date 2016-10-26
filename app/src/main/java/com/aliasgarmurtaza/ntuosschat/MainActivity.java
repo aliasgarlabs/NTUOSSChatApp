@@ -37,8 +37,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextInputLayout tILConfirmPassword;
     private boolean signUpFeaturesVisible = false;
 
-    //Declaring FirebaseAuth object
-    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +44,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         initializeViews();
-        initFirebaseAuth();
 
-        if (checkIfUserIsLoggedIn()) {
+        //TODO add firebaseAuth initialization here for milestone 1
+
+        //TODO replace checkIfUserIsLoggedInDummy with actual implementation for milestone 1
+        if (checkIfUserIsLoggedInDummy()) {
             openMessagesActivity();
         }
     }
@@ -129,10 +129,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //Proceed with Sign In or Sign UP
             if (signUpFeaturesVisible) {
                 //Sign Up as sign up views are visible
-                createUser(name, email, password);
+                //TODO Replace with actual implementation for milestone 1
+                createUserDummy(name, email, password);
             } else {
                 //Sign In
-                signInUser(email, password);
+                //TODO Replace with actual implementation for milestone 1
+                signInUserDummy(email, password);
             }
         } else {
             Toast.makeText(getApplicationContext(), "Please check your details", Toast.LENGTH_LONG).show();
@@ -146,46 +148,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         finish();
     }
 
-    private void createUser(final String name, final String email, String password) {
-        //We are creating a new user here. All security measures are handled by Firebase.
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
-
-                        if (!task.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(), "Sign up failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            //Now we want to add this user data in our DB so that we can store more attributes of the user
-                            //apart from name and email.
-                            updateUserInDB(task.getResult().getUser().getUid(), name, email);
-                            openMessagesActivity();
-                        }
-                    }
-                });
+    private void createUserDummy(final String name, final String email, String password) {
+        updateUserInDB("fakeUID","you@example.com", "123456");
+        openMessagesActivity();
     }
 
-    private void signInUser(String email, String password) {
-        //Again, security is taken care of. Returns passwords wrong or user doesn't exists exceptions.
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithEmail:failed", task.getException());
-                            Toast.makeText(getApplicationContext(), "Sign in failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            openMessagesActivity();
-                        }
-                    }
-                });
+    private void signInUserDummy(String email, String password) {
+       openMessagesActivity();
     }
 
     private void updateUserInDB(String uid, String name, String email) {
+        //TODO Although DB is part of milestone 2, we need to implement this for complete user sign up process.
+        //TODO Please uncomment the code below for milestone 1 as we need this.
+        // Just let the code live here. We will discuss this in milestone 2
+
+        /*
         //This is how we make a entry in the database. Yes, it's this simple.
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("users/" + uid);
@@ -212,19 +189,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Ofc we can add as many attributes we want.
         myRef.child("name").setValue(name);
         myRef.child("email").setValue(email);
+        */
     }
 
-    private void initFirebaseAuth() {
-        //Initializing FirebaseAuth.
-        //This object is responsible for all sign in, sign up and sign out.
-        mAuth = FirebaseAuth.getInstance();
-    }
-
-    private boolean checkIfUserIsLoggedIn() {
-        //Checking for already logged in user is this simple. No more maintaining of tokens and stuff.
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null)
-            return true;
+    private boolean checkIfUserIsLoggedInDummy()
+    {
+        //Returning false always
         return false;
     }
 

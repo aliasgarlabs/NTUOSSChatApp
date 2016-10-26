@@ -65,7 +65,8 @@ public class MessagesActivity extends AppCompatActivity implements View.OnClickL
         initializeViews();
         //TODO We are not fetching messages from the database yet. Show progress dialog after message implementation
         //showProgressDialog();
-        getCurrentUserDetailsFromDB();
+        //TODO should replace getCurrentUserDetailsDummy after auth implementation
+        getCurrentUserDetailsDummy();
 
     }
 
@@ -181,7 +182,7 @@ public class MessagesActivity extends AppCompatActivity implements View.OnClickL
         switch (item.getItemId()) {
             case R.id.action_signout:
                 //Code to sign out. That simple!
-                FirebaseAuth.getInstance().signOut();
+                //TODO not signing out technically. Just going to MainActivity. Should implement for Milestone 1
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
                 finish();
@@ -192,58 +193,13 @@ public class MessagesActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private void getCurrentUserDetailsFromDB() {
-        // This method's purpose is to demonstrate how a query in Firebase looks like.
-        // Gone are the days where we used SELECT commands.
-        // This method's purpose is to find the name of the current user.
-        // Again, remember Firebase is a NO-SQL database, It has tree like structure.
-        // ------DB
-        //        |
-        //        |______users
-        //                   |
-        //                   |______s27t7y2s7w78h8sh                                //(RANDOM UID)
-        //                   |                     |
-        //                   |                     |______name = user1name
-        //                   |                     |
-        //                   |                     |______email = user1email
-        //                   |
-        //                   |______j9dj3h37673ey83d                                //(RANDOM UID)
-        //                                         |
-        //                                         |______name = user2name
-        //                                         |
-        //                                         |______email = user2email
+    private void getCurrentUserDetailsDummy()
+    {
+        //Should replace this method with actual one for Milestone 1
+        currentUser = new User("You", "you@example.com");
 
-        //First we are going to the root and then to the child called users.
-        DatabaseReference userReference = FirebaseDatabase.getInstance().getReference().child("users");
-
-        //Now we want to search users by email. Here's the query for that.
-        Query query = userReference.orderByChild("email").equalTo(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-
-        //Now we are executing the search!
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // A snapshot is a representations of the data from the database
-                // We can traverse through multiple results (children of snapshots) like this.
-                for (DataSnapshot messageChild : dataSnapshot.getChildren()) {
-                    // You and I know that each user will have unique email
-                    // and that's why there will be only 1 child.
-                    // We assign the child to our User model like this.
-                    // Remember the variable names in the model class should
-                    // match with the attributes in the database.
-                    currentUser = messageChild.getValue(User.class);
-
-                    // Fetching messages now. The reason it is placed here is because
-                    // we want synchronization
-                    //TODO replace fetchMessageDummy() with actual implementation in Milestone 2
-                    fetchMessagesDummy();
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                //Handle cancellations here
-            }
-        });
+        //Should be replaced by actual implementation for Milestone 2
+        fetchMessagesDummy();
     }
 
     private void fetchMessagesDummy() {
