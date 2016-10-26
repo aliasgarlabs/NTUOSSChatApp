@@ -56,7 +56,10 @@ public class MessagesRecyclerAdapter extends RecyclerView.Adapter<MessagesRecycl
             //Message type is Image
             holder.from.setText(message.getFrom());
             //Setting default image so that imageView is not empty.
-            holder.imageView.setImageResource(R.drawable.default_image);
+            if(message.getImage()!=null)
+                holder.imageView.setImageBitmap(message.getImage());
+            else
+                holder.imageView.setImageResource(R.drawable.default_image);
             holder.message.setVisibility(View.GONE);
             holder.imageView.setVisibility(View.VISIBLE);
             //Downloading image with Glide. Free open-source library by Google. Swift.
