@@ -63,7 +63,8 @@ public class MessagesActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.messages_layout);
 
         initializeViews();
-        showProgressDialog();
+        //TODO We are not fetching messages from the database yet. Show progress dialog after message implementation
+        //showProgressDialog();
         getCurrentUserDetailsFromDB();
 
     }
@@ -152,7 +153,8 @@ public class MessagesActivity extends AppCompatActivity implements View.OnClickL
 
                 //Validating message
                 if (!textMessage.isEmpty())
-                    addMessageToDB(Message.TYPE_TEXT, textMessage);
+                    //TODO Replace addMessageDummy with actual implementation for milestone 2
+                    addMessageDummy(Message.TYPE_TEXT, textMessage);
                 else
                     Toast.makeText(getApplicationContext(), "Please enter a message", Toast.LENGTH_SHORT).show();
 
@@ -233,7 +235,8 @@ public class MessagesActivity extends AppCompatActivity implements View.OnClickL
 
                     // Fetching messages now. The reason it is placed here is because
                     // we want synchronization
-                    fetchMessagesFromDB();
+                    //TODO replace fetchMessageDummy() with actual implementation in Milestone 2
+                    fetchMessagesDummy();
                 }
             }
             @Override
@@ -243,97 +246,27 @@ public class MessagesActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
-    private void addMessageToDB(int messageType, String messageContent) {
+    private void fetchMessagesDummy() {
+        //This method does nothing as we can't fetch messages.
+        // All messages are stored in messages arrayList.
+    }
 
-        //Creating a messages reference and then adding the children attributes
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myMessageRef = database.getReference("messages").push(); //Push means appending
-        myMessageRef.child("from").setValue(currentUser.getName());
-        myMessageRef.child("messageType").setValue(messageType);
-
+    private void addMessageDummy(int messageType, String messageContent) {
+        Message message = new Message();
+        message.setFrom(currentUser.getName());
         //Checking if we should add text or imageURL based on messageType
         if(messageType == Message.TYPE_TEXT)
-            myMessageRef.child("text").setValue(messageContent);
+            message.setText(messageContent);
         else if(messageType == Message.TYPE_IMAGE)
-            myMessageRef.child("imageURL").setValue(messageContent);
+            message.setImageURL(messageContent);
+
+        //Manually adding message to messages array
+        messages.add(message);
+        messagesRecyclerAdapter.notifyDataSetChanged();
+        if(messages.size()>1)
+            messageRecyclerView.smoothScrollToPosition(messages.size()-1);
 
         //Resetting the editText field
         etMessageBox.setText("");
     }
-
-
-    private void fetchMessagesFromDB() {
-
-        //Creating reference of messages and then adding a listener.
-        //Anytime the database is changed, this listener will be called.
-        DatabaseReference messagesReference = FirebaseDatabase.getInstance().getReference("messages");
-        messagesReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //Clearing existing messages to avoid duplicates
-                messages.clear();
-
-                //Iterating through the children (messages)
-                for (DataSnapshot messageChild : dataSnapshot.getChildren()) {
-                    //Initializing message objects using Firebase
-                    Message message = messageChild.getValue(Message.class);
-
-                    //If the message was sent by current user, replace name. Just for demo. In real-life, should check userID.
-                    if (message.getFrom().equals(currentUser.getName())) {
-                        message.setFrom("You");
-                    }
-
-                    //Add messages to messages arrayList
-                    messages.add(message);
-                }
-
-                if (progressDialog.isShowing())
-                    progressDialog.dismiss();
-
-                //Notifying recyclerViewAdapter about new messages
-                if(messages.size()==1)
-                {
-                    messageRecyclerView.smoothScrollToPosition(messages.size());
-                    messagesRecyclerAdapter.notifyDataSetChanged();
-                }
-                else if(messages.size()>1)
-                {
-                    messageRecyclerView.smoothScrollToPosition(messages.size() - 1);
-                    messagesRecyclerAdapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                //Handle cancellations here
-            }
-        });
-    }
-
-    /*
-                                            ****BONUS*****
-    // Author: Aliasgar Murtaza
-    // This is a method to download images using Firebase methods. For demo purposes we are using glide
-    // as it solves the complexity of loading images asynchronously with recyclerView. Uncomment this method
-    // to use Firebase download methods.
-
-     private void downloadImage(String imageURI)
-        {
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReferenceFromUrl(imageURI);
-
-            final long ONE_MEGABYTE = 1024 * 1024;
-            storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                @Override
-                public void onSuccess(byte[] bytes) {
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
-                }
-            });
-        }
-     */
 }
