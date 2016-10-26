@@ -56,7 +56,6 @@ public class MessagesActivity extends AppCompatActivity implements View.OnClickL
     private ProgressDialog progressDialog;
     private MessagesRecyclerAdapter messagesRecyclerAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,18 +63,11 @@ public class MessagesActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.messages_layout);
 
         initializeViews();
-        initializeFirebaseAuth();
         showProgressDialog();
         getCurrentUserDetailsFromDB();
 
     }
 
-    private void initializeFirebaseAuth() {
-        //Initializing FirebaseAuth.
-        //This object is responsible for all sign in, sign up and sign out.
-        mAuth = FirebaseAuth.getInstance();
-
-    }
 
     private void initializeViews()
     {
