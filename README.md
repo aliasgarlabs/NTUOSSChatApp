@@ -163,7 +163,7 @@ private FirebaseAuth mAuth;
     }
 ```
 
->Replace `getCurrentUserDetailsDummy()`. This is not part of this milestone but we need this for complete createUser process flow. Just copy the code and we will discuss it in the next milestone.
+>Replace `getCurrentUserDetailsDummy()` in the `MessageActivity.java`. This is not part of this milestone but we need this for complete createUser process flow. Just copy the code and we will discuss it in the next milestone.
 
 ###7. Sign Out Functionality
 
