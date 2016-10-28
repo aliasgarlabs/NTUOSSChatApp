@@ -159,10 +159,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void updateUserInDB(String uid, String name, String email) {
         //TODO Although DB is part of milestone 2, we need to implement this for complete user sign up process.
-        //TODO Please uncomment the code below for milestone 1 as we need this.
         // Just let the code live here. We will discuss this in milestone 2
 
-        /*
+
         //This is how we make a entry in the database. Yes, it's this simple.
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("users/" + uid);
@@ -189,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Ofc we can add as many attributes we want.
         myRef.child("name").setValue(name);
         myRef.child("email").setValue(email);
-        */
+
     }
 
     private boolean checkIfUserIsLoggedInDummy()
